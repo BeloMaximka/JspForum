@@ -9,7 +9,6 @@ import itstep.learning.models.auth.RegisterRequest;
 import itstep.learning.services.AuthService;
 import itstep.learning.servlets.RestServlet;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,7 +22,7 @@ public class RegisterServlet extends RestServlet {
         this.authService = authService;
     }
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws HttpException, IOException {
         RegisterRequest reqisterData = parseAndValidateBody(req, RegisterRequest.class);
 
         if(!reqisterData.getPassword().equals(reqisterData.getConfirmPassword())) {
