@@ -20,21 +20,15 @@ public class GlobalErrorHandlingFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException {
         try {
             filterChain.doFilter(servletRequest, servletResponse);
-        } catch (Exception e) {
-            if (e instanceof ServletException && e.getCause() instanceof HttpException) {
-                HttpException httpException = (HttpException) e.getCause();
-                sendError(servletResponse, httpException.getCode(), httpException.getMessages());
-                return;
-            }
-            sendGeneralError(servletResponse);
         }
-    }
-
-    private void sendGeneralError(ServletResponse servletResponse) throws IOException {
-        List<String> errors = new ArrayList<>(1);
-        errors.add("An unknown error occurred. Please try again later.");
-        sendError(servletResponse, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, errors);
-
+        catch (HttpException e) {
+            sendError(servletResponse, e.getCode(), e.getMessages());
+        }
+        catch (Exception e) {
+            List<String> errors = new ArrayList<>(1);
+            errors.add("An unknown error occurred. Please try again later.");
+            sendError(servletResponse, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, errors);
+        }
     }
 
     private void sendError(ServletResponse servletResponse, int code, List<String> messages) throws IOException {

@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Singleton
-public class HomeServlet extends HttpServlet {
+public class HomeServlet extends RestServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
-        throw new ServletException("", new HttpException(HttpServletResponse.SC_BAD_REQUEST, "Exception message"));
+        throw new HttpException(HttpServletResponse.SC_BAD_REQUEST, "Exception message");
     }
 }

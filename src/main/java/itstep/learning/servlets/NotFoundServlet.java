@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Singleton
-public class NotFoundServlet  extends HttpServlet {
+public class NotFoundServlet extends RestServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
-        throw new ServletException("", new HttpException(HttpServletResponse.SC_BAD_REQUEST, "Invalid path."));
+        throw new HttpException(HttpServletResponse.SC_BAD_REQUEST, "Invalid path.");
     }
 }
