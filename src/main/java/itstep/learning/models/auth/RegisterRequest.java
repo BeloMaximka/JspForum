@@ -1,10 +1,13 @@
 package itstep.learning.models.auth;
 
+import java.util.Date;
+
 public class RegisterRequest {
     private String username;
     private String email;
     private String password;
     private String confirmPassword;
+    private Date birthdate;
 
     public String getUsername() {
         return username;
@@ -36,5 +39,13 @@ public class RegisterRequest {
 
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
+    }
+
+    public Date getBirthdate() {
+        return birthdate;
+    }
+
+    public void setBirthdate(Date birthdate) {
+        this.birthdate = birthdate;
     }
 }

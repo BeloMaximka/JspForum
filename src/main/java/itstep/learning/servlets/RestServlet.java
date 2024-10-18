@@ -20,22 +20,22 @@ public class RestServlet extends HttpServlet {
     private static final Gson gson = new GsonBuilder().serializeNulls().create();
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws HttpException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         sendMethodNotAllowedError("POST");
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws HttpException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         sendMethodNotAllowedError("GET");
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws HttpException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
         sendMethodNotAllowedError("PUT");
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws HttpException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
         sendMethodNotAllowedError("DELETE");
     }
 
@@ -50,17 +50,14 @@ public class RestServlet extends HttpServlet {
 
     protected static <T> T parseAndValidateBody(HttpServletRequest req, Class<T> type) throws HttpException, IOException {
         T body = gson.fromJson(req.getReader(), type);
-        if (body == null) {
-            throw new HttpException(HttpServletResponse.SC_BAD_REQUEST, "Body is required");
-        }
 
         List<String> errors = new ArrayList<>();
-        Field[] fields = body.getClass().getDeclaredFields();
+        Field[] fields = type.getDeclaredFields();
         for (Field field : fields) {
             Annotation requiredAnnotation = field.getAnnotation(Optional.class);
             field.setAccessible(true);
             try {
-                if (requiredAnnotation == null && field.get(body) == null) {
+                if (body == null || (requiredAnnotation == null && field.get(body) == null)) {
                     errors.add(field.getName() + " is required");
                 }
             } catch (IllegalAccessException ignored) {

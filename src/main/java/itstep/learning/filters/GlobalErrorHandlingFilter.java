@@ -2,6 +2,7 @@ package itstep.learning.filters;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import itstep.learning.expections.HttpException;
 import itstep.learning.models.rest.RestErrorResponse;
@@ -11,10 +12,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Singleton
 public class GlobalErrorHandlingFilter implements Filter {
     private static final Gson gson = new GsonBuilder().serializeNulls().create();
+    private final Logger logger;
+
+    @Inject
+    public GlobalErrorHandlingFilter(Logger logger) {
+        this.logger = logger;
+    }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException {
@@ -25,6 +33,7 @@ public class GlobalErrorHandlingFilter implements Filter {
             sendError(servletResponse, e.getCode(), e.getMessages());
         }
         catch (Exception e) {
+            logger.severe(e.getMessage());
             List<String> errors = new ArrayList<>(1);
             errors.add("An unknown error occurred. Please try again later.");
             sendError(servletResponse, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, errors);

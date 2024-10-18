@@ -19,13 +19,7 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
-    public JwtTokenResponse authenticateUser(HttpServletResponse resp, JwtAccessTokenPayload user) {
-        String refreshToken = generateRefreshTokenCookieHeader(user.getEmail());
-        resp.setHeader("Set-Cookie", refreshToken);
-        return generateAccessTokenResponse(user);
-    }
-
-    private JwtTokenResponse generateAccessTokenResponse(JwtAccessTokenPayload user) {
+    public JwtTokenResponse generateAccessToken(JwtAccessTokenPayload user) {
         Instant oneHourExpiration = Instant.now().plusSeconds(86400);
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", user.getEmail());
@@ -36,14 +30,14 @@ public class AuthService {
         return result;
     }
 
-    private String generateRefreshTokenCookieHeader(String userEmail) {
+    public void setRefreshTokenInCookie(HttpServletResponse resp, String userName) {
         int monthDurationInSeconds = 86400 * 30;
         Instant oneMonthExpirationDate = Instant.now().plusSeconds(monthDurationInSeconds);
         Map<String, Object> claims = new HashMap<>();
-        claims.put("email", userEmail);
+        claims.put("userName", userName);
 
-        return String.format("refresh_token=%s; Max-Age=%d; Path=/api/auth/refresh-token; Secure; HttpOnly; SameSite=Strict",
+        resp.setHeader("Set-Cookie", String.format("refresh_token=%s; Max-Age=%d; Path=/api/auth/refresh-token; Secure; HttpOnly; SameSite=Strict",
                 jwtService.generateToken(oneMonthExpirationDate, claims),
-                monthDurationInSeconds);
+                monthDurationInSeconds));
     }
 }
