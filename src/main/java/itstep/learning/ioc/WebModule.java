@@ -5,6 +5,7 @@ import itstep.learning.filters.JwtAuthenticationFilter;
 import itstep.learning.filters.GlobalErrorHandlingFilter;
 import itstep.learning.servlets.HomeServlet;
 import itstep.learning.servlets.NotFoundServlet;
+import itstep.learning.servlets.StorageServlet;
 import itstep.learning.servlets.auth.LoginServlet;
 import itstep.learning.servlets.auth.RefreshTokenServlet;
 import itstep.learning.servlets.auth.RegisterServlet;
@@ -20,6 +21,8 @@ public class WebModule extends ServletModule {
         serve("/api/auth").with(LoginServlet.class);
         serve("/api/auth/register").with(RegisterServlet.class);
         serve("/api/auth/refresh-token").with(RefreshTokenServlet.class);
+
+        serve("/api/storage/*").with(StorageServlet.class);
 
         serve("*").with(NotFoundServlet.class);
     }

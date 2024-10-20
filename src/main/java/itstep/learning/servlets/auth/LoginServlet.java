@@ -10,6 +10,7 @@ import itstep.learning.models.auth.JwtAccessTokenPayload;
 import itstep.learning.models.auth.LoginRequest;
 import itstep.learning.services.AuthService;
 import itstep.learning.servlets.RestServlet;
+import itstep.learning.services.bodyparser.BodyParseService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,17 +20,19 @@ import java.io.IOException;
 public class LoginServlet extends RestServlet {
     private final UserDao userDao;
     private final AuthService authService;
+    private final BodyParseService bodyParseService;
 
     @Inject
-    public LoginServlet(UserDao userDao, AuthService authService) {
+    public LoginServlet(UserDao userDao, AuthService authService, BodyParseService bodyParseService) {
         this.userDao = userDao;
         this.authService = authService;
+        this.bodyParseService = bodyParseService;
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws HttpException, IOException {
 
-        LoginRequest loginData = parseAndValidateBody(req, LoginRequest.class);
+        LoginRequest loginData = bodyParseService.parseAndValidate(req, LoginRequest.class);
         final String errorMsg = "Invalid username or password";
         try {
             User user = userDao.get(loginData.getUsername());

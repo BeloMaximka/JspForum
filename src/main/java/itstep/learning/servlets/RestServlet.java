@@ -48,28 +48,6 @@ public class RestServlet extends HttpServlet {
         super.service(req, resp);
     }
 
-    protected static <T> T parseAndValidateBody(HttpServletRequest req, Class<T> type) throws HttpException, IOException {
-        T body = gson.fromJson(req.getReader(), type);
-
-        List<String> errors = new ArrayList<>();
-        Field[] fields = type.getDeclaredFields();
-        for (Field field : fields) {
-            Annotation requiredAnnotation = field.getAnnotation(Optional.class);
-            field.setAccessible(true);
-            try {
-                if (body == null || (requiredAnnotation == null && field.get(body) == null)) {
-                    errors.add(field.getName() + " is required");
-                }
-            } catch (IllegalAccessException ignored) {
-            }
-        }
-        if (!errors.isEmpty()) {
-            throw new HttpException(HttpServletResponse.SC_BAD_REQUEST, errors);
-        }
-
-        return body;
-    }
-
     protected void send(HttpServletResponse resp, Object content) throws IOException {
         send(resp, HttpServletResponse.SC_OK, content);
     }

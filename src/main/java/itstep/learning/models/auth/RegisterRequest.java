@@ -1,5 +1,8 @@
 package itstep.learning.models.auth;
 
+import itstep.learning.annotations.Optional;
+import org.apache.commons.fileupload.FileItem;
+
 import java.util.Date;
 
 public class RegisterRequest {
@@ -8,6 +11,8 @@ public class RegisterRequest {
     private String password;
     private String confirmPassword;
     private Date birthdate;
+    @Optional
+    private FileItem avatar;
 
     public String getUsername() {
         return username;
@@ -47,5 +52,13 @@ public class RegisterRequest {
 
     public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
+    }
+
+    public FileItem getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(FileItem avatar) {
+        this.avatar = avatar;
     }
 }

@@ -3,13 +3,16 @@ package itstep.learning.servlets.auth;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import itstep.learning.dal.dao.UserDao;
 import itstep.learning.expections.HttpException;
 import itstep.learning.models.auth.JwtAccessTokenPayload;
 import itstep.learning.models.auth.RegisterRequest;
 import itstep.learning.models.user.CreateUserModel;
 import itstep.learning.services.AuthService;
+import itstep.learning.services.LocalStorageService;
 import itstep.learning.servlets.RestServlet;
+import itstep.learning.services.bodyparser.BodyParseService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,22 +24,33 @@ import java.sql.Date;
 public class RegisterServlet extends RestServlet {
     private final AuthService authService;
     private final UserDao userDao;
+    private final BodyParseService bodyParseService;
+    private final LocalStorageService localStorageService;
 
     @Inject
-    public RegisterServlet(AuthService authService, UserDao userDao) {
+    public RegisterServlet(AuthService authService,
+                           UserDao userDao,
+                           @Named("Multipart") BodyParseService bodyParseService,
+                           LocalStorageService localStorageService) {
         this.authService = authService;
         this.userDao = userDao;
+        this.bodyParseService = bodyParseService;
+        this.localStorageService = localStorageService;
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RegisterRequest reqisterData = parseAndValidateBody(req, RegisterRequest.class);
+        RegisterRequest reqisterData = bodyParseService.parseAndValidate(req, RegisterRequest.class);
 
         if (!reqisterData.getPassword().equals(reqisterData.getConfirmPassword())) {
             throw new HttpException(HttpServletResponse.SC_BAD_REQUEST, "Passwords do not match");
         }
 
-        createUserInDb(reqisterData);
+        String avatarUrl = null;
+        if(reqisterData.getAvatar() != null) {
+            avatarUrl = localStorageService.saveFile(reqisterData.getAvatar());
+        }
+        createUserInDb(reqisterData, avatarUrl);
         setRefreshTokenAndSendAccessToken(reqisterData, resp);
     }
 
@@ -48,7 +62,7 @@ public class RegisterServlet extends RestServlet {
         send(resp, authService.generateAccessToken(user));
     }
 
-    private void createUserInDb(RegisterRequest reqisterData) throws ServletException {
+    private void createUserInDb(RegisterRequest reqisterData, String avatarUrl) throws ServletException {
         CreateUserModel userModel = new CreateUserModel();
         userModel.setUserName(reqisterData.getUsername());
         userModel.setEmail(reqisterData.getEmail());
@@ -56,6 +70,7 @@ public class RegisterServlet extends RestServlet {
         userModel.setBirthdate(sqlDate);
         String passwordHash = BCrypt.withDefaults().hashToString(12, reqisterData.getPassword().toCharArray());
         userModel.setPasswordHash(passwordHash);
+        userModel.setAvatarUrl(avatarUrl);
         userDao.create(userModel);
     }
 }
