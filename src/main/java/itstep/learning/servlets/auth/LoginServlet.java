@@ -3,7 +3,9 @@ package itstep.learning.servlets.auth;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import itstep.learning.dal.dao.RoleDao;
 import itstep.learning.dal.dao.UserDao;
+import itstep.learning.dal.dto.Role;
 import itstep.learning.dal.dto.User;
 import itstep.learning.expections.HttpException;
 import itstep.learning.models.auth.JwtAccessTokenPayload;
@@ -15,16 +17,20 @@ import itstep.learning.services.bodyparser.BodyParseService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class LoginServlet extends RestServlet {
     private final UserDao userDao;
+    private final RoleDao roleDao;
     private final AuthenticationService authenticationService;
     private final BodyParseService bodyParseService;
 
     @Inject
-    public LoginServlet(UserDao userDao, AuthenticationService authenticationService, BodyParseService bodyParseService) {
+    public LoginServlet(UserDao userDao, RoleDao roleDao, AuthenticationService authenticationService, BodyParseService bodyParseService) {
         this.userDao = userDao;
+        this.roleDao = roleDao;
         this.authenticationService = authenticationService;
         this.bodyParseService = bodyParseService;
     }
@@ -42,6 +48,8 @@ public class LoginServlet extends RestServlet {
             }
 
             JwtAccessTokenPayload payload = new JwtAccessTokenPayload();
+            List<String> roles = roleDao.getAll(user.getUserId()).stream().map(Role::getName).collect(Collectors.toList());
+            payload.setRoles(roles);
             payload.setEmail(user.getEmail());
             payload.setUsername(user.getUserName());
 

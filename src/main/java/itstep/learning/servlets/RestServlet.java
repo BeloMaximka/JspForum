@@ -2,7 +2,6 @@ package itstep.learning.servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import itstep.learning.annotations.Optional;
 import itstep.learning.expections.HttpException;
 
 import javax.servlet.ServletException;
@@ -10,11 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class RestServlet extends HttpServlet {
     private static final Gson gson = new GsonBuilder().serializeNulls().create();
@@ -30,12 +25,12 @@ public class RestServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         sendMethodNotAllowedError("PUT");
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         sendMethodNotAllowedError("DELETE");
     }
 

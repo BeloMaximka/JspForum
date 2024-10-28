@@ -8,6 +8,7 @@ import com.auth0.jwt.interfaces.Verification;
 import com.google.inject.Singleton;
 import itstep.learning.expections.HttpException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.Instant;
 import java.util.Map;
@@ -38,5 +39,17 @@ public class JwtService {
         } catch (Exception e) {
             throw new HttpException(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token");
         }
+    }
+
+    public String getToken(HttpServletRequest servletRequest) throws HttpException {
+        String authHeader = servletRequest.getHeader("Authorization");
+        if (authHeader == null) {
+            throw new HttpException(HttpServletResponse.SC_UNAUTHORIZED, "Authorization header not found");
+        }
+        String authScheme = "Bearer ";
+        if (!authHeader.startsWith(authScheme)) {
+            throw new HttpException(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Authorization scheme. Required " + authScheme);
+        }
+        return authHeader.substring(authScheme.length());
     }
 }

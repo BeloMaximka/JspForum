@@ -22,6 +22,7 @@ public class AuthenticationService {
     public JwtTokenResponse generateAccessToken(JwtAccessTokenPayload user) {
         Instant oneHourExpiration = Instant.now().plusSeconds(86400);
         Map<String, Object> claims = new HashMap<>();
+        claims.put("roles", user.getRoles());
         claims.put("email", user.getEmail());
         claims.put("username", user.getUsername());
 
