@@ -7,7 +7,7 @@ import itstep.learning.dal.dao.UserDao;
 import itstep.learning.dal.dto.User;
 import itstep.learning.expections.HttpException;
 import itstep.learning.models.auth.JwtAccessTokenPayload;
-import itstep.learning.services.AuthService;
+import itstep.learning.services.AuthenticationService;
 import itstep.learning.services.JwtService;
 import itstep.learning.servlets.RestServlet;
 
@@ -21,13 +21,13 @@ import java.util.Arrays;
 @Singleton
 public class RefreshTokenServlet extends RestServlet {
     private final UserDao userDao;
-    private final AuthService authService;
+    private final AuthenticationService authenticationService;
     private final JwtService jwtService;
 
     @Inject
-    public RefreshTokenServlet(UserDao userDao, AuthService authService, JwtService jwtService) {
+    public RefreshTokenServlet(UserDao userDao, AuthenticationService authenticationService, JwtService jwtService) {
         this.userDao = userDao;
-        this.authService = authService;
+        this.authenticationService = authenticationService;
         this.jwtService = jwtService;
     }
 
@@ -41,8 +41,8 @@ public class RefreshTokenServlet extends RestServlet {
             userPayload.setUsername(user.getUserName());
             userPayload.setEmail(userName);
 
-            authService.setRefreshTokenInCookie(resp, user.getUserName());
-            send(resp, authService.generateAccessToken(userPayload));
+            authenticationService.setRefreshTokenInCookie(resp, user.getUserName());
+            send(resp, authenticationService.generateAccessToken(userPayload));
         } catch (HttpException e) {
             throw new HttpException(HttpServletResponse.SC_UNAUTHORIZED, "Invalid refresh token");
         }

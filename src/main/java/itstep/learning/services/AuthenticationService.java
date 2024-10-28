@@ -11,11 +11,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Singleton
-public class AuthService {
+public class AuthenticationService {
     private final JwtService jwtService;
 
     @Inject
-    public AuthService(JwtService jwtService) {
+    public AuthenticationService(JwtService jwtService) {
         this.jwtService = jwtService;
     }
 

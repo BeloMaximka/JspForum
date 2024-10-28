@@ -9,7 +9,7 @@ import itstep.learning.expections.HttpException;
 import itstep.learning.models.auth.JwtAccessTokenPayload;
 import itstep.learning.models.auth.RegisterRequest;
 import itstep.learning.models.user.CreateUserModel;
-import itstep.learning.services.AuthService;
+import itstep.learning.services.AuthenticationService;
 import itstep.learning.services.LocalStorageService;
 import itstep.learning.servlets.RestServlet;
 import itstep.learning.services.bodyparser.BodyParseService;
@@ -22,17 +22,17 @@ import java.sql.Date;
 
 @Singleton
 public class RegisterServlet extends RestServlet {
-    private final AuthService authService;
+    private final AuthenticationService authenticationService;
     private final UserDao userDao;
     private final BodyParseService bodyParseService;
     private final LocalStorageService localStorageService;
 
     @Inject
-    public RegisterServlet(AuthService authService,
+    public RegisterServlet(AuthenticationService authenticationService,
                            UserDao userDao,
                            @Named("Multipart") BodyParseService bodyParseService,
                            LocalStorageService localStorageService) {
-        this.authService = authService;
+        this.authenticationService = authenticationService;
         this.userDao = userDao;
         this.bodyParseService = bodyParseService;
         this.localStorageService = localStorageService;
@@ -58,8 +58,8 @@ public class RegisterServlet extends RestServlet {
         JwtAccessTokenPayload user = new JwtAccessTokenPayload();
         user.setEmail(reqisterData.getEmail());
         user.setUsername(reqisterData.getUsername());
-        authService.setRefreshTokenInCookie(resp, user.getUsername());
-        send(resp, authService.generateAccessToken(user));
+        authenticationService.setRefreshTokenInCookie(resp, user.getUsername());
+        send(resp, authenticationService.generateAccessToken(user));
     }
 
     private void createUserInDb(RegisterRequest reqisterData, String avatarUrl) throws ServletException {
