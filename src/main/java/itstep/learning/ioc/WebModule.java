@@ -7,6 +7,7 @@ import itstep.learning.servlets.HomeServlet;
 import itstep.learning.servlets.NotFoundServlet;
 import itstep.learning.servlets.posts.PostServlet;
 import itstep.learning.servlets.posts.PostsServlet;
+import itstep.learning.servlets.posts.SimilarPostsServlet;
 import itstep.learning.servlets.posts.ThemePostsServlet;
 import itstep.learning.servlets.sections.SectionServlet;
 import itstep.learning.servlets.sections.SectionsServlet;
@@ -23,9 +24,6 @@ public class WebModule extends ServletModule {
     protected void configureServlets() {
         filter("*").through(GlobalErrorHandlingFilter.class);
 
-        filter("/api/home").through(JwtAuthenticationFilter.class);
-        serve("/api/home").with(HomeServlet.class);
-
         serve("/api/auth").with(LoginServlet.class);
         serve("/api/auth/register").with(RegisterServlet.class);
         filter("/api/auth/refresh-token").through(JwtAuthenticationFilter.class);
@@ -35,6 +33,7 @@ public class WebModule extends ServletModule {
 
         serveRegex("/api/themes/[0-9A-z-]{36}/posts").with(ThemePostsServlet.class);
         serveRegex("/api/posts/[0-9A-z-]{36}").with(PostServlet.class);
+        serveRegex("/api/posts/[0-9A-z-]{36}/similar/\\d").with(SimilarPostsServlet.class);
         serveRegex("/api/posts").with(PostsServlet.class);
 
         serveRegex("/api/sections/[0-9A-z-]{36}/themes").with(SectionThemesServlet.class);

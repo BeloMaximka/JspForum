@@ -22,6 +22,25 @@ public class PostDao {
         this.connection = mySqlDbService.getConnection();
     }
 
+    public List<Post> getSimilar(Post post, int limit) throws ServletException {
+        try {
+            String sql = "SELECT * FROM posts WHERE ThemeId = ? AND DeleteDate IS NULL AND Id != ? LIMIT ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, post.getThemeId().toString());
+            preparedStatement.setString(2, post.getId().toString());
+            preparedStatement.setInt(3, limit);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<Post> posts = new LinkedList<>();
+            while (resultSet.next()) {
+                posts.add(new Post(resultSet));
+            }
+            return posts;
+        } catch (SQLException e) {
+            throw new ServletException(e.getMessage());
+        }
+    }
+
     public List<Post> getAll(UUID themeId) throws ServletException {
         try {
             String sql = "SELECT * FROM posts WHERE ThemeId = ? AND DeleteDate IS NULL";
