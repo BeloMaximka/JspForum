@@ -70,7 +70,7 @@ public class PostDao {
 
     public void update(UUID id, UpdatePostModel post) throws ServletException {
         try {
-            String sql = "UPDATE posts SET Title = ?, Description = ? WHERE Id = ?";
+            String sql = "UPDATE posts SET Title = ?, Description = ? WHERE Id = ? AND DeleteDate IS NULL";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, post.getTitle());
             preparedStatement.setString(2, post.getDescription());
