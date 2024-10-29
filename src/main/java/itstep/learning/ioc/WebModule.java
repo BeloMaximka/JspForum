@@ -21,6 +21,7 @@ public class WebModule extends ServletModule {
 
         serve("/api/auth").with(LoginServlet.class);
         serve("/api/auth/register").with(RegisterServlet.class);
+        filter("/api/auth/refresh-token").through(JwtAuthenticationFilter.class);
         serve("/api/auth/refresh-token").with(RefreshTokenServlet.class);
 
         serve("/api/storage/*").with(StorageServlet.class);

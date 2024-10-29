@@ -25,7 +25,7 @@ public class SectionDao {
 
     public List<Section> getAll() throws ServletException {
         try {
-            String sql = "SELECT * FROM sections";
+            String sql = "SELECT * FROM sections WHERE DeleteDate IS NULL";
             ResultSet resultSet = connection.createStatement().executeQuery(sql);
 
             List<Section> sections = new LinkedList<>();
@@ -40,7 +40,7 @@ public class SectionDao {
 
     public Section get(UUID id) throws ServletException {
         try {
-            String sql = "SELECT * FROM sections WHERE Id = ?";
+            String sql = "SELECT * FROM sections WHERE Id = ? AND DeleteDate IS NULL";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, id.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -81,7 +81,7 @@ public class SectionDao {
 
     public void delete(UUID id) throws ServletException {
         try {
-            String sql = "DELETE FROM sections WHERE Id = ?";
+            String sql = "UPDATE sections SET DeleteDate = NOW() WHERE Id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, id.toString());
             int affectedRows = preparedStatement.executeUpdate();

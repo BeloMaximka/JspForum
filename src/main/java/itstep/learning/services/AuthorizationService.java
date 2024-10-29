@@ -20,7 +20,7 @@ public class AuthorizationService {
 
     public void validateRole(HttpServletRequest req, String role) throws HttpException {
         List<String> roles = getRolesFromHeaders(req);
-        if (roles.stream().noneMatch(role::equals)) {
+        if (roles == null || roles.stream().noneMatch(role::equals)) {
             throw new HttpException(HttpServletResponse.SC_UNAUTHORIZED, "Insufficient role");
         }
     }

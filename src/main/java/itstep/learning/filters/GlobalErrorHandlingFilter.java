@@ -34,6 +34,7 @@ public class GlobalErrorHandlingFilter implements Filter {
         }
         catch (Exception e) {
             logger.severe(e.toString());
+            e.printStackTrace();
             List<String> errors = new ArrayList<>(1);
             errors.add("An unknown error occurred. Please try again later.");
             sendError(servletResponse, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, errors);
