@@ -31,17 +31,9 @@ public class ThemesServlet extends RestServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        UUID sectionId = pathParserService.getUUIDAfterSection(req, "sections");
-        send(resp, themeDao.getAll(sectionId));
-    }
-
-    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         authorizationService.validateRole(req, "admin");
-        UUID sectionId = pathParserService.getUUIDAfterSection(req, "sections");
         CreateThemeModel themeData = bodyParseService.parseAndValidate(req, CreateThemeModel.class);
-        themeData.setSectionId(sectionId);
         themeDao.create(themeData);
         resp.setStatus(HttpServletResponse.SC_CREATED);
     }

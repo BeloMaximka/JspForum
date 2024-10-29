@@ -34,11 +34,11 @@ public class ThemeDao {
             preparedStatement.setString(1, sectionId.toString());
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            List<Theme> sections = new LinkedList<>();
+            List<Theme> themes = new LinkedList<>();
             while (resultSet.next()) {
-                sections.add(new Theme(resultSet));
+                themes.add(new Theme(resultSet));
             }
-            return sections;
+            return themes;
         } catch (SQLException e) {
             throw new ServletException(e.getMessage());
         }
@@ -94,7 +94,7 @@ public class ThemeDao {
 
     public void delete(UUID id) throws ServletException {
         try {
-            String sql = "UPDATE themes SET DeleteDate = NOW() WHERE Id = ?";
+            String sql = "UPDATE themes SET DeleteDate = NOW() WHERE Id = ? AND DeleteDate IS NULL";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, id.toString());
             int affectedRows = preparedStatement.executeUpdate();

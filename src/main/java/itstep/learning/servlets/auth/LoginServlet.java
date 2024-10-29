@@ -14,6 +14,7 @@ import itstep.learning.services.AuthenticationService;
 import itstep.learning.servlets.RestServlet;
 import itstep.learning.services.bodyparser.BodyParseService;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -36,28 +37,30 @@ public class LoginServlet extends RestServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws HttpException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         LoginRequest loginData = bodyParseService.parseAndValidate(req, LoginRequest.class);
         final String errorMsg = "Invalid username or password";
+        User user;
         try {
-            User user = userDao.get(loginData.getUsername());
+            user = userDao.get(loginData.getUsername());
             BCrypt.Result result = BCrypt.verifyer().verify(loginData.getPassword().toCharArray(), user.getPasswordHash().toCharArray());
             if (!result.verified) {
                 throw new HttpException(HttpServletResponse.SC_UNAUTHORIZED, errorMsg);
             }
 
-            JwtAccessTokenPayload payload = new JwtAccessTokenPayload();
-            List<String> roles = roleDao.getAll(user.getUserId()).stream().map(Role::getName).collect(Collectors.toList());
-            payload.setRoles(roles);
-            payload.setEmail(user.getEmail());
-            payload.setUsername(user.getUserName());
-
-            authenticationService.setRefreshTokenInCookie(resp, user.getUserName());
-            send(resp, authenticationService.generateAccessToken(payload));
-
         } catch (Exception e) {
             throw new HttpException(HttpServletResponse.SC_UNAUTHORIZED, errorMsg);
         }
+
+        JwtAccessTokenPayload payload = new JwtAccessTokenPayload();
+        List<String> roles = roleDao.getAll(user.getUserId()).stream().map(Role::getName).collect(Collectors.toList());
+        payload.setId(user.getUserId());
+        payload.setRoles(roles);
+        payload.setEmail(user.getEmail());
+        payload.setUsername(user.getUserName());
+
+        authenticationService.setRefreshTokenInCookie(resp, user.getUserName());
+        send(resp, authenticationService.generateAccessToken(payload));
     }
 }

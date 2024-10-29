@@ -45,6 +45,7 @@ public class RefreshTokenServlet extends RestServlet {
 
             JwtAccessTokenPayload userPayload = new JwtAccessTokenPayload();
             List<String> roles = roleDao.getAll(user.getUserId()).stream().map(Role::getName).collect(Collectors.toList());
+            userPayload.setId(user.getUserId());
             userPayload.setRoles(roles);
             userPayload.setUsername(user.getUserName());
             userPayload.setEmail(userName);

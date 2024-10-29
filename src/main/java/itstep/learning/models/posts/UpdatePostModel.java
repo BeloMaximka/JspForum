@@ -1,19 +1,8 @@
-package itstep.learning.models.themes;
+package itstep.learning.models.posts;
 
-import java.util.UUID;
-
-public class CreateThemeModel {
-    private UUID sectionId;
+public class UpdatePostModel {
     private String title;
     private String description;
-
-    public UUID getSectionId() {
-        return sectionId;
-    }
-
-    public void setSectionId(UUID sectionId) {
-        this.sectionId = sectionId;
-    }
 
     public String getTitle() {
         return title;

@@ -81,7 +81,7 @@ public class SectionDao {
 
     public void delete(UUID id) throws ServletException {
         try {
-            String sql = "UPDATE sections SET DeleteDate = NOW() WHERE Id = ?";
+            String sql = "UPDATE sections SET DeleteDate = NOW() WHERE Id = ? AND DeleteDate IS NULL";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, id.toString());
             int affectedRows = preparedStatement.executeUpdate();
