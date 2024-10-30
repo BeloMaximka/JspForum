@@ -9,6 +9,7 @@ import itstep.learning.servlets.posts.PostServlet;
 import itstep.learning.servlets.posts.PostsServlet;
 import itstep.learning.servlets.posts.SimilarPostsServlet;
 import itstep.learning.servlets.posts.ThemePostsServlet;
+import itstep.learning.servlets.rates.PostRatesServlet;
 import itstep.learning.servlets.sections.SectionServlet;
 import itstep.learning.servlets.sections.SectionsServlet;
 import itstep.learning.servlets.StorageServlet;
@@ -35,6 +36,8 @@ public class WebModule extends ServletModule {
         serve("/api/auth/refresh-token").with(RefreshTokenServlet.class);
 
         serve("/api/storage/*").with(StorageServlet.class);
+
+        serveRegex("/api/posts/[0-9A-z-]{36}/rates").with(PostRatesServlet.class);
 
         serveRegex("/api/themes/[0-9A-z-]{36}/posts").with(ThemePostsServlet.class);
         serveRegex("/api/posts/[0-9A-z-]{36}").with(PostServlet.class);

@@ -11,9 +11,7 @@ import itstep.learning.services.MySqlDbService;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
-import java.time.Instant;
 import java.util.UUID;
-import java.sql.Date;
 
 @Singleton
 public class UserDao {
