@@ -18,11 +18,16 @@ import itstep.learning.servlets.auth.RegisterServlet;
 import itstep.learning.servlets.themes.SectionThemesServlet;
 import itstep.learning.servlets.themes.ThemeServlet;
 import itstep.learning.servlets.themes.ThemesServlet;
+import itstep.learning.servlets.users.MyUserServlet;
+import itstep.learning.servlets.users.UserServlet;
 
 public class WebModule extends ServletModule {
     @Override
     protected void configureServlets() {
         filter("*").through(GlobalErrorHandlingFilter.class);
+
+        serve("/api/users/my").with(MyUserServlet.class);
+        serveRegex("/api/users/.+").with(UserServlet.class);
 
         serve("/api/auth").with(LoginServlet.class);
         serve("/api/auth/register").with(RegisterServlet.class);

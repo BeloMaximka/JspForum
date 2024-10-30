@@ -3,7 +3,6 @@ package itstep.learning.servlets.themes;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import itstep.learning.dal.dao.ThemeDao;
-import itstep.learning.models.sections.SectionResponseModel;
 import itstep.learning.models.themes.ThemeResponseModel;
 import itstep.learning.services.PathParserService;
 import itstep.learning.services.SlugService;

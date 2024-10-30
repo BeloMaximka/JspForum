@@ -29,4 +29,14 @@ public class PathParserService {
             throw new HttpException(HttpServletResponse.SC_BAD_REQUEST, errorMsg);
         }
     }
+
+    public String getStringAfterSection(HttpServletRequest req, String sectionName) throws HttpException {
+        try {
+            sectionName += "/";
+            int index = req.getServletPath().indexOf(sectionName) + sectionName.length();
+            return req.getServletPath().substring(index);
+        } catch (Exception e) {
+            throw new HttpException(HttpServletResponse.SC_BAD_REQUEST, errorMsg);
+        }
+    }
 }
