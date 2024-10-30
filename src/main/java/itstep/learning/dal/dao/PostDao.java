@@ -41,6 +41,23 @@ public class PostDao {
         }
     }
 
+    public List<Post> getRated(UUID userId) throws ServletException {
+        try {
+            String sql = "SELECT p.* FROM rates r JOIN posts p ON p.Id = r.ItemId WHERE r.UserId = ? AND p.DeleteDate IS NULL";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, userId.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<Post> posts = new LinkedList<>();
+            while (resultSet.next()) {
+                posts.add(new Post(resultSet));
+            }
+            return posts;
+        } catch (SQLException e) {
+            throw new ServletException(e.getMessage());
+        }
+    }
+
     public List<Post> getAll(UUID themeId) throws ServletException {
         try {
             String sql = "SELECT * FROM posts WHERE ThemeId = ? AND DeleteDate IS NULL";
